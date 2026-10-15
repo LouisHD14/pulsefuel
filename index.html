@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PulseFuel App</title>
+<style>
+:root{--bg:#f2eeff;--card:#ffffff;--text:#1a1445;--muted:#6c64a3;--track:#e4dfff;--g1:#00d4ff;--g2:#2979ff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0a26;--card:#1a1550;--text:#f4f1ff;--muted:#a79fe0;--track:#2b2475;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d0a26;--card:#1a1550;--text:#f4f1ff;--muted:#a79fe0;--track:#2b2475;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;font-size:16px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.app{max-width:520px;margin:0 auto;min-height:100vh}
+header{padding:24px 22px 6px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:Impact,"Arial Black",sans-serif;font-size:32px;letter-spacing:1px;font-style:italic;background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.chip{font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--card)}
+.chip i{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ee87a;margin-right:6px}
+main{padding:12px 20px 130px}
+h2{font-family:Impact,"Arial Black",sans-serif;font-weight:400;font-size:38px;letter-spacing:.5px;margin:12px 0 2px;text-transform:uppercase}
+h3{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:22px 0 10px}
+.sub{color:var(--muted);font-size:15px;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:none;border-radius:26px;padding:20px 16px;min-height:200px;text-align:left;color:#fff;font:inherit;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;opacity:.5;transform:scale(.96);transition:.2s}
+.tile.on{opacity:1;transform:scale(1);box-shadow:0 10px 28px rgba(0,0,0,.3)}
+.tile .e{font-size:56px}
+.tile b{display:block;font-family:Impact,"Arial Black",sans-serif;font-weight:400;font-size:28px;letter-spacing:.5px;text-transform:uppercase}
+.tile span{font-size:13px;opacity:.92}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.opt{border:2px solid var(--track);background:var(--card);color:var(--text);border-radius:999px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer}
+.opt.on{border-color:transparent;color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2))}
+input[type=range]{width:100%;accent-color:var(--g2);height:36px}
+.card{background:var(--card);border-radius:24px;padding:20px;margin-bottom:16px}
+.big{font-family:Impact,"Arial Black",sans-serif;font-size:44px;line-height:1}
+.rings{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.ring{background:var(--card);border-radius:24px;padding:16px 4px 12px;text-align:center}
+.ring svg{display:block;margin:0 auto 6px;width:100%;max-width:120px;height:auto}
+.ring b{font-size:13px;color:var(--muted);font-weight:700}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border-radius:22px;padding:18px}
+.stat small{display:block;color:var(--muted);font-weight:700;font-size:13px;margin-bottom:6px}
+.stat b{font-family:Impact,"Arial Black",sans-serif;font-weight:400;font-size:34px}
+.stat em{font-style:normal;font-size:14px;color:var(--muted)}
+.tip{border-radius:22px;padding:18px;color:#fff;font-weight:700;font-size:16px;background:linear-gradient(135deg,var(--g1),var(--g2));margin-bottom:16px}
+.tip.warn{background:linear-gradient(135deg,#ff9a00,#ff2d55)}
+.pill{display:inline-block;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2))}
+.row{display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-bottom:8px}
+.track{height:14px;background:var(--track);border-radius:7px;overflow:hidden;margin-bottom:18px}
+.track:last-child{margin-bottom:0}
+.fill{height:14px;border-radius:7px;transition:width .5s}
+.bottle{display:block;margin:0 auto 16px}
+button.go{width:100%;border:none;border-radius:22px;padding:20px;font-family:Impact,"Arial Black",sans-serif;font-size:24px;letter-spacing:1px;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2));cursor:pointer;margin-bottom:16px}
+button.go.stop{background:linear-gradient(90deg,#ff9a00,#ff2d55)}
+button.go:disabled{opacity:.7}
+.bars{display:flex;align-items:flex-end;gap:10px;height:140px}
+.bars div{flex:1;text-align:center;font-size:12px;color:var(--muted);font-weight:700}
+.bars i{display:block;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,var(--g1),var(--g2));margin-bottom:6px;min-height:4px}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--track);font-weight:700}
+.hist:last-child{border:none}
+.hist small{color:var(--muted);font-weight:400}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{background:var(--card);border-radius:20px;padding:16px 6px;text-align:center;font-size:12px;font-weight:700;opacity:.4}
+.badge.on{opacity:1}
+.badge span{display:block;font-size:34px;margin-bottom:4px}
+nav{position:fixed;left:0;right:0;bottom:0;padding:0 14px calc(12px + env(safe-area-inset-bottom,0px))}
+nav div{max-width:480px;margin:0 auto;display:flex;background:var(--card);border-radius:999px;padding:6px;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+nav button{flex:1;border:none;background:none;color:var(--muted);font:inherit;font-size:12px;font-weight:800;border-radius:999px;padding:10px 0;cursor:pointer}
+nav button span{display:block;font-size:24px}
+nav button.on{color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2))}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">PULSEFUEL</div><div class="chip"><i></i>Band connected</div></header>
+<main id="view"></main>
+<nav><div id="nav"></div></nav>
+</div>
+<script>
+var sports={
+endurance:{name:"Endurance",ico:"🏃",desc:"Run, bike, swim",c:["#00d4ff","#2979ff"],w:{"Electrolytes":.8,"Slow carbs":.8,"Fast carbs":.3,"Protein":.2,"Focus blend":.2}},
+power:{name:"Power",ico:"🏋️",desc:"Strength, sprint",c:["#ff9a00","#ff2d55"],w:{"Electrolytes":.4,"Slow carbs":.3,"Fast carbs":.8,"Protein":.9,"Focus blend":.3}},
+team:{name:"Team",ico:"⚽",desc:"Football, handball",c:["#b6ff2a","#00c853"],w:{"Electrolytes":.6,"Slow carbs":.5,"Fast carbs":.6,"Protein":.5,"Focus blend":.6}},
+focus:{name:"Focus",ico:"🎯",desc:"Golf, shooting, e-sports",c:["#c77dff","#6a35ff"],w:{"Electrolytes":.3,"Slow carbs":.2,"Fast carbs":.2,"Protein":.1,"Focus blend":.9}}
+};
+var cols=["#00d4ff","#ff9a00","#b6ff2a","#ff4d9d","#c77dff"];
+var base={"Electrolytes":2,"Slow carbs":40,"Fast carbs":30,"Protein":20,"Focus blend":4};
+var unit={"Electrolytes":"g","Slow carbs":"g","Fast carbs":"g","Protein":"g","Focus blend":"g"};
+var ints={easy:["Easy",.8],medium:["Medium",1],hard:["Hard",1.25]};
+var flavors=["Lemon","Berry","Mango","Mint"];
+var S={tab:"sport",sport:"endurance",inten:"medium",dur:60,flavor:"Lemon",hyd:72,ele:58,fat:34,hr:78,sw:0.6,tmp:36.8,hist:[72,70,71,69,70,68,70,72],run:false,sec:0,mixing:false,prog:0,done:false,log:[],week:[45,0,60,30,75,20,0]};
+var tabs=[["sport","🏅","Sport"],["live","📈","Live"],["mix","🧪","Mix"],["stats","🏆","Stats"]];
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function theme(){var c=sports[S.sport].c,r=document.documentElement.style;r.setProperty("--g1",c[0]);r.setProperty("--g2",c[1])}
+function mix(){var w=sports[S.sport].w,m={};for(var k in w){m[k]=w[k]}
+m["Electrolytes"]=clamp(m["Electrolytes"]+(60-S.ele)/100,.05,1);
+m["Protein"]=clamp(m["Protein"]+(S.fat-30)/200,.05,1);
+m["Fast carbs"]=clamp(m["Fast carbs"]+(S.fat-30)/300,.05,1);return m}
+function grams(m,k){return Math.round(m[k]*base[k]*ints[S.inten][1]*S.dur/60*10)/10}
+function ring(label,val,color){var d=Math.round(val*2.136);
+return '<div class="ring"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="34" fill="none" stroke="var(--track)" stroke-width="9"/><circle cx="42" cy="42" r="34" fill="none" stroke="'+color+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+d+' 214" transform="rotate(-90 42 42)"/><text x="42" y="49" text-anchor="middle" font-size="21" font-weight="800" fill="var(--text)">'+Math.round(val)+'</text></svg><b>'+label+'</b></div>'}
+function stat(l,v,u){return '<div class="stat"><small>'+l+'</small><b>'+v+'</b> <em>'+u+'</em></div>'}
+function clock(s){var m=Math.floor(s/60),x=s%60;return (m<10?"0":"")+m+":"+(x<10?"0":"")+x}
+function spark(){var p=S.hist,w=440,h=70,pts=p.map(function(v,i){return Math.round(i*w/(p.length-1))+","+Math.round(h-(v-30)/70*h)}).join(" ");
+return '<svg viewBox="0 0 440 70" width="100%" height="90" preserveAspectRatio="none" role="img" aria-label="Hydration trend"><polyline points="'+pts+'" fill="none" stroke="var(--g1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
+function render(){theme();
+var v=document.getElementById("view"),h="",m,i=0;
+if(S.tab==="sport"){
+h='<h2>Pick your game</h2><p class="sub">Your supplement adapts to your sport.</p><div class="grid">';
+for(var k in sports){var s=sports[k];h+='<button class="tile'+(S.sport===k?' on':'')+'" data-sport="'+k+'" style="background:linear-gradient(135deg,'+s.c[0]+','+s.c[1]+')"><span class="e">'+s.ico+'</span><div><b>'+s.name+'</b><span>'+s.desc+'</span></div></button>'}
+h+='</div><h3>Intensity</h3><div class="chips">';
+for(var k in ints){h+='<button class="opt'+(S.inten===k?' on':'')+'" data-inten="'+k+'">'+ints[k][0]+'</button>'}
+h+='</div><h3>Workout length</h3><div class="card"><div class="big">'+S.dur+' <em style="font-size:18px;font-style:normal">min</em></div><input type="range" id="dur" min="15" max="180" step="15" value="'+S.dur+'"></div>';
+}else if(S.tab==="live"){
+var low=S.hyd<55||S.ele<42;
+h='<h2>Live body data</h2><p class="sub">Measured by your wristband every 2 seconds.</p>';
+h+='<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><small style="color:var(--muted);font-weight:700">Workout time</small><div class="big">'+clock(S.sec)+'</div></div><button class="opt on" data-run="1" style="padding:16px 26px;font-size:16px">'+(S.run?"Stop":"Start")+'</button></div>';
+h+=(low?'<div class="tip warn">Warning: low '+(S.hyd<55?"hydration":"salts")+'. Drink your mix now.</div>':'<div class="tip">'+(S.fat>55?"You are getting tired. Extra protein and fast energy coming up.":"All values look great. Keep pushing!")+'</div>');
+h+='<div class="rings">'+ring("Hydration",S.hyd,"#00d4ff")+ring("Salts",S.ele,"#ff9a00")+ring("Fatigue",S.fat,"#ff4d9d")+'</div>';
+h+='<div class="stats">'+stat("Heart rate",Math.round(S.hr),"bpm")+stat("Sweat rate",S.sw.toFixed(1),"L/h")+stat("Body temp",S.tmp.toFixed(1),"°C")+stat("Sodium loss",Math.round(S.sw*900),"mg/h")+'</div>';
+h+='<div class="card"><div class="row"><span>Hydration trend</span><span>'+Math.round(S.hyd)+'%</span></div>'+spark()+'</div>';
+}else if(S.tab==="mix"){
+m=mix();var water=Math.round(400+(80-S.hyd)*4),cal=0;
+h='<h2>Your mix</h2><p class="sub"><span class="pill">'+sports[S.sport].name+'</span> &nbsp;<span class="pill">'+ints[S.inten][0]+'</span> &nbsp;<span class="pill">'+S.dur+' min</span></p>';
+h+='<svg class="bottle" width="200" height="300" viewBox="0 0 120 180" role="img" aria-label="Smart bottle filling up"><defs><linearGradient id="lq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--g1)"/><stop offset="1" style="stop-color:var(--g2)"/></linearGradient><clipPath id="cp"><rect x="16" y="34" width="88" height="140" rx="18"/></clipPath></defs><rect x="34" y="4" width="52" height="26" rx="8" fill="var(--muted)"/><rect x="16" y="34" width="88" height="140" rx="18" fill="var(--track)"/><g clip-path="url(#cp)"><rect x="16" y="'+(174-S.prog*1.4)+'" width="88" height="'+(S.prog*1.4+2)+'" fill="url(#lq)"/></g><text x="60" y="112" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">'+Math.round(S.prog)+'%</text></svg>';
+h+='<h3>Flavor</h3><div class="chips" style="margin-bottom:16px">';
+flavors.forEach(function(f){h+='<button class="opt'+(S.flavor===f?' on':'')+'" data-flavor="'+f+'">'+f+'</button>'});
+h+='</div><div class="card">';
+for(var k in m){var g=grams(m,k);if(k!=="Electrolytes"&&k!=="Focus blend")cal+=g*4;h+='<div class="row"><span>'+k+'</span><span>'+g+' g</span></div><div class="track"><div class="fill" style="width:'+m[k]*100+'%;background:'+cols[i++]+'"></div></div>'}
+h+='</div><div class="stats">'+stat("Water",water,"ml")+stat("Energy",Math.round(cal),"kcal")+'</div>';
+h+='<button class="go" id="go"'+(S.mixing?' disabled':'')+'>'+(S.mixing?"Mixing "+Math.round(S.prog)+"%":S.done?"Mix again":"Start mixing")+'</button>';
+if(S.done)h+='<p class="sub" style="text-align:center">Ready! Your '+S.flavor.toLowerCase()+' '+sports[S.sport].name+' mix is in the bottle.</p>';
+}else{
+var tot=S.week.reduce(function(a,b){return a+b},0),mx=Math.max.apply(null,S.week),days=["M","T","W","T","F","S","S"];
+h='<h2>Your stats</h2><p class="sub">Your progress this week.</p><div class="stats">'+stat("Workout time",tot,"min")+stat("Mixes made",S.log.length,"total")+'</div>';
+h+='<div class="card"><div class="row"><span>This week</span><span>'+tot+' min</span></div><div class="bars">';
+S.week.forEach(function(x,j){h+='<div><i style="height:'+Math.max(4,x/mx*100)+'px"></i>'+days[j]+'</div>'});
+h+='</div></div><h3>Badges</h3><div class="badges"><div class="badge'+(S.log.length>=1?' on':'')+'"><span>🥇</span>First mix</div><div class="badge'+(S.log.length>=3?' on':'')+'"><span>🔥</span>3 mixes</div><div class="badge'+(S.hyd>=70?' on':'')+'"><span>💧</span>Hydration hero</div></div>';
+h+='<h3>Mix history</h3><div class="card">';
+if(!S.log.length)h+='<p class="sub" style="margin:0">No mixes yet. Make your first one!</p>';
+S.log.slice().reverse().forEach(function(l){h+='<div class="hist"><span>'+l.ico+' '+l.name+' · '+l.flavor+'<br><small>'+l.t+'</small></span><span>'+l.min+' min</span></div>'});
+h+='</div>';
+}
+v.innerHTML=h;
+var n="";tabs.forEach(function(t){n+='<button data-tab="'+t[0]+'" class="'+(S.tab===t[0]?'on':'')+'"><span>'+t[1]+'</span>'+t[2]+'</button>'});
+document.getElementById("nav").innerHTML=n;
+}
+document.addEventListener("input",function(e){if(e.target.id==="dur"){S.dur=+e.target.value;e.target.previousElementSibling.firstChild.nodeValue=S.dur+" "}});
+document.addEventListener("click",function(e){
+var b=e.target.closest("[data-sport],[data-tab],[data-inten],[data-flavor],[data-run],#go");if(!b)return;
+if(b.dataset.sport){S.sport=b.dataset.sport;S.done=false;S.prog=0}
+else if(b.dataset.tab){S.tab=b.dataset.tab}
+else if(b.dataset.inten){S.inten=b.dataset.inten}
+else if(b.dataset.flavor){S.flavor=b.dataset.flavor}
+else if(b.dataset.run){S.run=!S.run;if(S.run){S.sec=0}else if(S.sec>=60){S.week[6]+=Math.round(S.sec/60)}}
+else if(b.id==="go"&&!S.mixing){S.mixing=true;S.done=false;S.prog=0;
+var t=setInterval(function(){S.prog+=4;if(S.prog>=100){S.prog=100;S.mixing=false;S.done=true;clearInterval(t);S.hyd=clamp(S.hyd+12,0,98);S.ele=clamp(S.ele+10,0,98);S.log.push({ico:sports[S.sport].ico,name:sports[S.sport].name,flavor:S.flavor,min:S.dur,t:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})})}render()},120)}
+render();
+});
+var tick=0;
+setInterval(function(){tick++;
+if(S.run)S.sec++;
+if(tick%2===0){
+var d=S.run?-1.2:-0.2;
+S.hyd=clamp(S.hyd+d+(Math.random()*3-1.5),20,98);
+S.ele=clamp(S.ele+d+(Math.random()*3-1.5),15,95);
+S.fat=clamp(S.fat+(S.run?1.2:-.6)+(Math.random()*2-1),5,95);
+S.hr=clamp(S.hr+(Math.random()*8-4)+((S.run?130:75)-S.hr)*.2,60,185);
+S.sw=clamp(S.sw+(Math.random()*.2-.1)+((S.run?1.4:.4)-S.sw)*.2,.2,2.4);
+S.tmp=clamp(S.tmp+(Math.random()*.2-.1)+((S.run?38:36.8)-S.tmp)*.1,36.4,39.4);
+S.hist.push(S.hyd);if(S.hist.length>24)S.hist.shift();}
+if(S.tab==="live")render();
+},1000);
+render();
+</script>
+</body>
+</html>
